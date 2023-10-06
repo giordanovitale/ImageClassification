@@ -4,6 +4,7 @@ from PIL import Image
 import random
 import numpy as np
 import matplotlib.pyplot as plt
+import json
 
 
 def get_image_paths(directory=os.getcwd()):
@@ -83,6 +84,7 @@ def grid_shape(num):
     :return: nrows: int. number of rows in the grid, ncols: int. number of columns in the grid
     """
     factors = get_factors(num)
+    nrows, ncols = None, None
 
     if sqrt(num) in factors:
         nrows, ncols = sqrt(num), sqrt(num)
@@ -96,9 +98,10 @@ def grid_shape(num):
     return int(nrows), int(ncols)
 
 
-def plot_images(image_paths, num=16):
+def plot_images(image_paths, num=16, figsize=(10, 10)):
     """
     Plots a number of random sample images from the data set
+    :param figsize: Tuple of the figure size
     :param image_paths: List image paths to plot images from
     :param num: Int. Number of images to plot
     :return: None
@@ -106,7 +109,7 @@ def plot_images(image_paths, num=16):
     nrows, ncols = grid_shape(num)
     rand_imgs = np.reshape(random.sample(image_paths, num), (nrows, ncols))
 
-    fig, ax = plt.subplots(figsize=(10, 10),  nrows=nrows, ncols=ncols)
+    fig, ax = plt.subplots(figsize=figsize,  nrows=nrows, ncols=ncols)
 
     fig.suptitle("Sample of images from the data set")
     for i in range(ncols):
@@ -119,5 +122,59 @@ def plot_images(image_paths, num=16):
                 title = "Muffin"
             ax[i, j].set_title(title)
             ax[i, j].axis("off")
+
+    plt.show()
+
+
+def history_to_json(history, file_path):
+    """
+    Saves the history of a tensorflow model to a .json file
+    :param history: tensorflow model history
+    :param file_path: Path of the .json file to write the history to
+    :return: None
+    """
+    json.dump(history.history, open(file_path, "w"))
+
+
+def json_loader(file_path):
+    """
+    Loads a .json file as a dictionary
+    :param file_path: Path of the .json file to write the history to
+    :return: Dict. of the .json file
+    """
+    history = json.load(open(file_path, "r"))
+    return history
+
+
+def plot_metrics(history, figsize=(10, 5)):
+    """
+    Plots the loss and accuracy curves from a history dictionary.
+    :param history: Dict. of the history of a tensorflow model
+    :param figsize: Tuple of the figure size
+    :return: None
+    """
+    fig, ax = plt.subplots(figsize=figsize, nrows=1, ncols=2)
+
+    loss = history["loss"]
+    val_loss = history["val_loss"]
+
+    accuracy = history["accuracy"]
+    val_accuracy = history["val_accuracy"]
+
+    epochs = range(1, 1 + len(history["loss"]))
+
+    # Plot loss
+    ax[0].plot(epochs, loss, label="Training Loss", linewidth=2, color="#0291b5")
+    ax[0].plot(epochs, val_loss, label="Validation Loss", linewidth=2, color="#eb0076")
+    ax[0].set_title("Loss")
+    ax[0].set_xlabel("Epochs")
+    ax[0].legend()
+
+    # Plot accuracy
+    ax[1].plot(epochs, accuracy, label="Training Accuracy", linewidth=2, color="#0291b5")
+    ax[1].plot(epochs, val_accuracy, label="Validation Accuracy", linewidth=2, color="#eb0076")
+    ax[1].set_title("Accuracy")
+    ax[1].set_xlabel("Epochs")
+    ax[1].legend()
 
     plt.show()
