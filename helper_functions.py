@@ -98,7 +98,7 @@ def grid_shape(num):
     return int(nrows), int(ncols)
 
 
-def plot_images(image_paths, num=16, figsize=(10, 10)):
+def plot_random_images(image_paths, num=16, figsize=(10, 10)):
     """
     Plots a number of random sample images from the data set
     :param figsize: Tuple of the figure size
@@ -133,10 +133,12 @@ def history_to_json(history, file_path):
     :param file_path: Path of the .json file to write the history to
     :return: None
     """
-    json.dump(history.history, open(file_path, "w"))
+    hist_dict = {"loss": history.history["loss"], "accuracy": history.history["accuracy"],
+                 "val_loss": history.history["val_loss"], "val_accuracy": history.history["val_accuracy"]}
+    json.dump(hist_dict, open(file_path, "w"))
 
 
-def json_loader(file_path):
+def load_json(file_path):
     """
     Loads a .json file as a dictionary
     :param file_path: Path of the .json file to write the history to
@@ -178,3 +180,42 @@ def plot_metrics(history, figsize=(10, 5)):
     ax[1].legend()
 
     plt.show()
+
+
+def plot_augmented_image(image, augmentation_layer, num=9, figsize=(10, 10)):
+    """
+    Plots a number of random sample images from the data set
+    :param image: Numpy array or tensor of image to augment
+    :param augmentation_layer: Keras sequential stack of augmentation layers
+    :param num: Int. Number of augmentations to plot
+    :param figsize: Tuple of the figure size
+    :return: None
+    """
+
+    nrows, ncols = grid_shape(num)
+
+    fig, ax = plt.subplots(figsize=figsize, nrows=nrows, ncols=ncols)
+
+    fig.suptitle("Image augmentation")
+
+    for i in range(ncols):
+        for j in range(nrows):
+            aug_img = augmentation_layer(image)
+            ax[i, j].imshow(aug_img)
+            ax[i, j].axis("off")
+
+    plt.show()
+
+
+def random_invert_img(image, prob=0.2):
+    """
+    Randomly inverts the colours of an image with a given probability
+    :param image: Numpy array or tensor of image to invert
+    :param prob: Float Probability with which the image is inverted
+    :return: image: Numpy array or tensor of the image
+    """
+    if random.uniform(a=0, b=1) < prob:
+        x = (1 - image)
+    else:
+        image
+    return image

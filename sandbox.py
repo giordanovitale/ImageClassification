@@ -1,7 +1,8 @@
 import os
 import numpy as np
 import tensorflow as tf
-from helper_functions import corrupted_images, get_image_paths, plot_images, history_to_json, json_loader, plot_metrics
+from helper_functions import corrupted_images, get_image_paths, plot_random_images, history_to_json, load_json, \
+    plot_metrics, plot_augmented_image, random_invert_img
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.layers import Dense, Flatten, Conv2D, MaxPool2D, Activation
 from tensorflow.keras import Sequential
@@ -25,7 +26,7 @@ print("")
 
 # Showing random images
 print("Plotting a grid of random images")
-plot_images(image_paths)
+plot_random_images(image_paths)
 print("")
 
 # Loading data set
@@ -71,9 +72,26 @@ print(f"New maximum and minimum values of an image: {np.min(first_image), np.max
 print("")
 
 
-print("Defining the model")
+print("Data Augmentation")
+# Data augmentation layer
+data_augmentation = tf.keras.Sequential([
+    tf.keras.layers.RandomFlip("horizontal_and_vertical"),
+    tf.keras.layers.RandomRotation(0.2),
+    tf.keras.layers.RandomContrast(0.3),
+    tf.keras.layers.Lambda(lambda x: random_invert_img(x, 0.2))
+])
+
+aug_train = train_ds.map(lambda x, y: (data_augmentation(x, training=True), y))
+aug_val = val_ds.map(lambda x, y: (data_augmentation(x, training=True), y))
+
+plot_augmented_image(image=next(iter(train_ds))[0][0], augmentation_layer=data_augmentation)
 print("")
-model = Sequential([
+
+
+# Model building
+print("Defining the models")
+print("")
+model_1 = Sequential([
     Conv2D(10, 3, activation="relu", input_shape=(128, 128, 3)),
     MaxPool2D(pool_size=(2, 2)),
     Conv2D(10, 3, activation="relu"),
@@ -84,37 +102,71 @@ model = Sequential([
     Dense(1, activation="sigmoid")
 ])
 
-print("Compiling the model")
+model_2 = Sequential([
+    Conv2D(10, 3, activation="relu", input_shape=(128, 128, 3)),
+    MaxPool2D(pool_size=(2, 2)),
+    Conv2D(10, 3, activation="relu"),
+    MaxPool2D(pool_size=(2, 2)),
+    Conv2D(10, 3, activation="relu"),
+    MaxPool2D(pool_size=(2, 2)),
+    Flatten(),
+    Dense(1, activation="sigmoid")
+])
+
+print("Compiling the models")
 print("")
-model.compile(loss="binary_crossentropy",
-              optimizer=Adam(),
-              metrics=["accuracy"])
+model_1.compile(loss="binary_crossentropy",
+                optimizer=Adam(),
+                metrics=["accuracy"])
+
+model_2.compile(loss="binary_crossentropy",
+                optimizer=Adam(),
+                metrics=["accuracy"])
 
 # Fitting the model
-print("Fitting the model")
-history = model.fit(train_ds,
-                    epochs=10,
-                    steps_per_epoch=len(train_ds),
-                    validation_data=val_ds,
-                    validation_steps=len(val_ds))
+print("Fitting the models")
+# Callbacks
+early_stopper = tf.keras.callbacks.EarlyStopping(monitor="val_loss", patience=2, verbose=1)
+lr_scheduler = tf.keras.callbacks.LearningRateScheduler(lambda epoch: 1e-3 * 10 ** (epoch / 20))
 
+history_1 = model_1.fit(train_ds,
+                        epochs=3,
+                        steps_per_epoch=len(train_ds),
+                        validation_data=val_ds,
+                        validation_steps=len(val_ds),
+                        callbacks=[lr_scheduler, early_stopper])
 
-# Saving the history to a json file
-history_file_path = "/Users/philip/Documents/Milano University/2. Semester/Machine Learning/ML " \
-                    "Project/hists/history.json"
+history_2 = model_2.fit(aug_train,
+                        epochs=3,
+                        steps_per_epoch=len(aug_train),
+                        validation_data=aug_val,
+                        validation_steps=len(aug_val),
+                        callbacks=[lr_scheduler, early_stopper])
+
 
 print("Saving model history to json file")
 print("")
-history_to_json(history=history, file_path=history_file_path)
+# Saving the history to a json file
+
+history_file_path_1 = "/Users/philip/Documents/Milano University/2. Semester/Machine Learning/ML " \
+                      "Project/hists/history_1.json"
+history_file_path_2 = "/Users/philip/Documents/Milano University/2. Semester/Machine Learning/ML " \
+                      "Project/hists/history_1.json"
+
+history_to_json(history=history_1, file_path=history_file_path_1)
+history_to_json(history=history_2, file_path=history_file_path_2)
 
 # Loading json file of the models history
 print("Loading model history to json file")
 print("")
-history_dict = json_loader(history_file_path)
+# Loading json file of the models history
+history_dict_1 = load_json(history_file_path_1)
+history_dict_2 = load_json(history_file_path_2)
 
-print(f"Dictionary of the models history loaded from the json file: {history_dict}")
+print(f"Dictionaries of the models history loaded from the json file: {history_dict_1}, {history_dict_2}")
 print("")
 
 # Plotting metrics curves
 print("Plotting loss and accuracy curves of the model")
-plot_metrics(history=history_dict)
+plot_metrics(history=history_dict_1)
+plot_metrics(history=history_dict_2)
