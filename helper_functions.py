@@ -5,6 +5,7 @@ import random
 import numpy as np
 import matplotlib.pyplot as plt
 import json
+import tensorflow as tf
 
 
 def get_image_paths(directory=os.getcwd()):
@@ -219,3 +220,11 @@ def random_invert_img(image, prob=0.2):
     else:
         image
     return image
+
+
+def image_standardisation(tensor):
+    """
+    This is simply a workaround, as it is not possible to load models with lambda functions,
+    unless you insert a custom function
+    """
+    return tf.image.per_image_standardization(tensor)
