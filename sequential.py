@@ -18,7 +18,7 @@ seq_1 = Sequential([
     tf.keras.layers.Lambda(function=image_standardisation,
                            name="Per_image_standardisation"),
 
-    # 1st convolutional layer
+    # 1st convolutional block
     Conv2D(filters=32,
            kernel_size=(3, 3),
            strides=(1, 1),
@@ -32,7 +32,7 @@ seq_1 = Sequential([
               padding="valid",
               name="MaxPool_1"),
 
-    # 2nd convolutional layer
+    # 2nd convolutional block
     Conv2D(filters=32,
            kernel_size=(3, 3),
            strides=(1, 1),
@@ -46,7 +46,7 @@ seq_1 = Sequential([
               padding="valid",
               name="MaxPool_2"),
 
-    # 3rd convolutional layer
+    # 3rd convolutional block
     Conv2D(filters=32,
            kernel_size=(3, 3),
            strides=(1, 1),
