@@ -171,8 +171,10 @@ seq_2 = Sequential([
 # Saving the models
 seq_1.save(
     "/content/drive/MyDrive/MachineLearningProject/models/sequential/seq_1.keras",
-    save_format="keras")
+    save_format="keras",
+    overwrite=True)
 
 seq_2.save(
     "/content/drive/MyDrive/MachineLearningProject/models/sequential/seq_2.keras",
-    save_format="keras")
+    save_format="keras",
+    overwrite=True)
