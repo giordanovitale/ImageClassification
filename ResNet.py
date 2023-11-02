@@ -1,9 +1,11 @@
-# https://github.com/AarohiSingla/ResNet50/blob/master/3-resnet50_rooms_dataset.ipynb
 import tensorflow as tf
 from tensorflow.keras import Model
 from tensorflow.keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, \
     BatchNormalization, Add, ReLU, ZeroPadding2D, GlobalAveragePooling2D, Input
 from helper_functions import image_standardisation
+
+# Code inspired by:
+# https://github.com/AarohiSingla/ResNet50/blob/master/3-resnet50_rooms_dataset.ipynb
 
 INPUT_SHAPE = (224, 224, 3)
 
@@ -177,9 +179,6 @@ def ResNet14(input_shape=INPUT_SHAPE):
     # Global Average Pooling
     tensor = GlobalAveragePooling2D(name="GlobalAvgPooling")(tensor)
 
-    # Flatten layer
-    tensor = Flatten(name="Flatten")(tensor)
-
     # Output layer
     tensor = Dense(units=1,
                    activation="sigmoid",
@@ -192,6 +191,8 @@ def ResNet14(input_shape=INPUT_SHAPE):
 
     return model
 
+
+##########################
 
 def three_layer_identity_block(tensor, num_filters, stage):
     """
@@ -257,6 +258,7 @@ def three_layer_projection_block(tensor, num_filters, stage, strides=(2, 2)):
     :param tensor: input tensor for the block
     :param num_filters: Int. Number of filters for the convolutional layers
     :param stage: Int. Counter for numbering the identity blocks
+    :param strides: Tuple of the strides
     :return: output tensor
     """
 
@@ -327,6 +329,7 @@ def ResNet32(input_shape=INPUT_SHAPE):
     :return: ResNet32 model
     """
 
+    # Define the input as a tensor with shape input_shape
     tensor_input = Input(shape=input_shape,
                          batch_size=32,
                          name="Input")
@@ -407,9 +410,6 @@ def ResNet32(input_shape=INPUT_SHAPE):
     # Global Average Pooling
     tensor = GlobalAveragePooling2D(name="GlobalAvgPooling")(tensor)
 
-    # Flatten layer
-    tensor = Flatten(name="Flatten")(tensor)
-
     # Output layer
     tensor = Dense(units=1,
                    activation="sigmoid",
@@ -421,3 +421,19 @@ def ResNet32(input_shape=INPUT_SHAPE):
                   name="ResNet32")
 
     return model
+
+
+# Creating the models
+res_14 = ResNet14(input_shape=INPUT_SHAPE)
+res_32 = ResNet32(input_shape=INPUT_SHAPE)
+
+# Saving the models
+res_14.save(
+    "/content/drive/MyDrive/MachineLearningProject/models/resnet/res_14.keras",
+    save_format="keras",
+    overwrite=True)
+
+res_32.save(
+    "/content/drive/MyDrive/MachineLearningProject/models/resnet/res_32.keras",
+    save_format="keras",
+    overwrite=True)
