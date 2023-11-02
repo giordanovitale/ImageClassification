@@ -62,7 +62,7 @@ seq_1 = Sequential([
 
     Flatten(name="Flatten"),
 
-    Dense(1,
+    Dense(units=1,
           activation="sigmoid",
           kernel_initializer="glorot_normal",
           bias_initializer="zeros",
@@ -159,7 +159,7 @@ seq_2 = Sequential([
 
     Flatten(name="Flatten"),
 
-    Dense(1,
+    Dense(units=1,
           activation="sigmoid",
           kernel_initializer="glorot_normal",
           bias_initializer="zeros",
