@@ -27,6 +27,7 @@ def two_layer_identity_block(tensor, num_filters, stage):
                     kernel_size=(3, 3),
                     strides=(1, 1),
                     padding="same",
+                    kernel_initializer="HeNormal",
                     name=f"Conv1_{stage}")(tensor)  # Padding to keep dimensions
 
     tensor = BatchNormalization(axis=3,
@@ -39,7 +40,7 @@ def two_layer_identity_block(tensor, num_filters, stage):
                     kernel_size=(3, 3),
                     strides=(1, 1),
                     padding="same",
-                    kernel_initializer="glorot_normal",
+                    kernel_initializer="HeNormal",
                     name=f"Conv2_{stage}")(tensor)  # Padding to keep dimensions
 
     tensor = BatchNormalization(axis=3,
@@ -71,7 +72,7 @@ def two_layer_projection_block(tensor, num_filters, stage):
                     kernel_size=(3, 3),
                     strides=(2, 2),  # Strides (2, 2) to reduce the dimensions
                     padding="same",  # Padding to obtain even half of the dimensions
-                    kernel_initializer="glorot_normal",
+                    kernel_initializer="HeNormal",
                     name=f"Conv1_{stage}")(tensor)
 
     tensor = BatchNormalization(axis=3,
@@ -84,7 +85,7 @@ def two_layer_projection_block(tensor, num_filters, stage):
                     kernel_size=(3, 3),
                     strides=(1, 1),
                     padding="same",
-                    kernel_initializer="glorot_normal",
+                    kernel_initializer="HeNormal",
                     name=f"Conv2_{stage}")(tensor)  # Padding to keep dimensions
 
     tensor = BatchNormalization(axis=3,
@@ -96,7 +97,7 @@ def two_layer_projection_block(tensor, num_filters, stage):
     shortcut_tensor = Conv2D(filters=num_filters,
                              kernel_size=(1, 1),
                              strides=(2, 2),
-                             kernel_initializer="glorot_normal",
+                             kernel_initializer="HeNormal",
                              name=f"Conv3_{stage}")(shortcut_tensor)  # strides=(2,2) for dimension reduction
 
     shortcut_tensor = BatchNormalization(axis=3,
@@ -137,7 +138,7 @@ def ResNet14(input_shape=INPUT_SHAPE):
     tensor = Conv2D(filters=64,
                     kernel_size=(7, 7),
                     strides=(2, 2),
-                    kernel_initializer="glorot_normal",
+                    kernel_initializer="HeNormal",
                     name="Conv1")(tensor)
 
     tensor = BatchNormalization(axis=3,
@@ -211,7 +212,7 @@ def three_layer_identity_block(tensor, num_filters, stage):
                     kernel_size=(1, 1),
                     strides=(1, 1),
                     padding="valid",
-                    kernel_initializer="glorot_normal",
+                    kernel_initializer="HeNormal",
                     name=f"Conv1_{stage}")(tensor)
 
     tensor = BatchNormalization(axis=3,
@@ -224,7 +225,7 @@ def three_layer_identity_block(tensor, num_filters, stage):
                     kernel_size=(3, 3),
                     strides=(1, 1),
                     padding="same",
-                    kernel_initializer="glorot_normal",
+                    kernel_initializer="HeNormal",
                     name=f"Conv2_{stage}")(tensor)  # Padding to keep dimensions
 
     tensor = BatchNormalization(axis=3,
@@ -237,7 +238,7 @@ def three_layer_identity_block(tensor, num_filters, stage):
                     kernel_size=(1, 1),
                     strides=(1, 1),
                     padding="valid",
-                    kernel_initializer="glorot_normal",
+                    kernel_initializer="HeNormal",
                     name=f"Conv3_{stage}")(tensor)
 
     tensor = BatchNormalization(axis=3,
@@ -269,7 +270,7 @@ def three_layer_projection_block(tensor, num_filters, stage, strides=(2, 2)):
     tensor = Conv2D(filters=num_filters,
                     kernel_size=(1, 1),
                     strides=strides,  # Strides are (2, 2) to reduce the dimensions
-                    kernel_initializer="glorot_normal",
+                    kernel_initializer="HeNormal",
                     padding="valid",
                     name=f"Conv1_{stage}")(tensor)
 
@@ -282,7 +283,7 @@ def three_layer_projection_block(tensor, num_filters, stage, strides=(2, 2)):
     tensor = Conv2D(filters=num_filters,
                     kernel_size=(3, 3),
                     strides=(1, 1),
-                    kernel_initializer="glorot_normal",
+                    kernel_initializer="HeNormal",
                     padding="same",  # Padding to keep dimensions
                     name=f"Conv2_{stage}")(tensor)
 
@@ -295,7 +296,7 @@ def three_layer_projection_block(tensor, num_filters, stage, strides=(2, 2)):
     tensor = Conv2D(filters=num_filters * 4,
                     kernel_size=(1, 1),
                     strides=(1, 1),
-                    kernel_initializer="glorot_normal",
+                    kernel_initializer="HeNormal",
                     padding="valid",
                     name=f"Conv3_{stage}")(tensor)
 
@@ -309,7 +310,7 @@ def three_layer_projection_block(tensor, num_filters, stage, strides=(2, 2)):
                              kernel_size=(1, 1),
                              strides=strides,  # Strides are (2, 2) to reduce the dimensions
                              padding="valid",
-                             kernel_initializer="glorot_normal",
+                             kernel_initializer="HeNormal",
                              name=f"Conv4_{stage}")(shortcut_tensor)
 
     shortcut_tensor = BatchNormalization(axis=3,
@@ -350,7 +351,7 @@ def ResNet32(input_shape=INPUT_SHAPE):
     tensor = Conv2D(filters=64,
                     kernel_size=(7, 7),
                     strides=(2, 2),
-                    kernel_initializer="glorot_normal",
+                    kernel_initializer="HeNormal",
                     name="Conv1")(tensor)
 
     tensor = BatchNormalization(axis=3,
