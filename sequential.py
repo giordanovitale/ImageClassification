@@ -91,11 +91,12 @@ seq_2 = Sequential([
            kernel_initializer="HeNormal",
            name="Conv_1"),
     ReLU(name="ReLU_1"),
+    BatchNormalization(name="BatchNorm_1"),
     AveragePooling2D(pool_size=(2, 2),
                      strides=None,
                      padding="valid",
                      name="AvgPool_1"),
-    BatchNormalization(name="BatchNorm_1"),
+    
 
     # 2nd convolutional block
     Conv2D(filters=128,
@@ -106,11 +107,12 @@ seq_2 = Sequential([
            kernel_initializer="HeNormal",
            name="Conv_2"),
     ReLU(name="ReLU_2"),
+    BatchNormalization(name="BatchNorm_2"),
     AveragePooling2D(pool_size=(2, 2),
                      strides=None,
                      padding="valid",
                      name="AvgPool_2"),
-    BatchNormalization(name="BatchNorm_2"),
+    
 
     # 3rd convolutional block
     Conv2D(filters=64,
@@ -121,11 +123,12 @@ seq_2 = Sequential([
            kernel_initializer="HeNormal",
            name="Conv_3"),
     ReLU(name="ReLU_3"),
+    BatchNormalization(name="BatchNorm_3"),
     AveragePooling2D(pool_size=(2, 2),
                      strides=None,
                      padding="valid",
                      name="AvgPool_3"),
-    BatchNormalization(name="BatchNorm_3"),
+    
 
     # 4th convolutional block
     Conv2D(filters=64,
@@ -136,11 +139,12 @@ seq_2 = Sequential([
            kernel_initializer="HeNormal",
            name="Conv_4"),
     PReLU(name="PReLU_1"),
+    BatchNormalization(name="BatchNorm_4"),
     AveragePooling2D(pool_size=(2, 2),
                      strides=None,
                      padding="valid",
                      name="AvgPool_4"),
-    BatchNormalization(name="BatchNorm_4"),
+    
 
     # 5th convolutional block
     Conv2D(filters=32,
@@ -151,11 +155,12 @@ seq_2 = Sequential([
            kernel_initializer="HeNormal",
            name="Conv_5"),
     PReLU(name="PReLU_2"),
+    BatchNormalization(name="BatchNorm_5"),
     AveragePooling2D(pool_size=(2, 2),
                      strides=None,
                      padding="valid",
                      name="AvgPool_5"),
-    BatchNormalization(name="BatchNorm_5"),
+    
 
     Flatten(name="Flatten"),
 
