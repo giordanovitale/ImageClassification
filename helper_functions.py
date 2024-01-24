@@ -127,16 +127,16 @@ def plot_random_images(image_paths, num=16, figsize=(10, 10)):
     plt.show()
 
 
-def history_to_json(history, file_path):
+def history_to_json(history, filepath):
     """
     Saves the history of a tensorflow model to a .json file
     :param history: tensorflow model history
-    :param file_path: Path of the .json file to write the history to
+    :param filepath: Path of the .json file to write the history to
     :return: None
     """
     hist_dict = {"loss": history.history["loss"], "accuracy": history.history["accuracy"],
                  "val_loss": history.history["val_loss"], "val_accuracy": history.history["val_accuracy"]}
-    json.dump(hist_dict, open(file_path, "w"))
+    json.dump(hist_dict, open(filepath, "w"))
 
 
 def load_json(file_path):
@@ -228,3 +228,67 @@ def image_standardisation(tensor):
     unless you insert a custom function
     """
     return tf.image.per_image_standardization(tensor)
+
+
+def scheduler(epoch, lr):
+    """
+    Creates schedule to obtain an exponential decay of the learning rate
+    :param epoch: Int. Epoch at which we start the decay of the learning rate
+    :param lr: Float Learning rate for the optimiser
+    :return: Learning rate for a given epoch
+    """
+    if epoch < 15:
+        return lr
+    else:
+        return lr * tf.math.exp(-0.05)
+
+
+def csv_to_df(filepath):
+    """
+    Takes a CSV file and creates a Pandas DataFrame.
+    :param filepath: Path of the .csv file to create the DataFrame from.
+    :return: A Pandas DataFrame containing the data from the CSV file.
+    """
+
+    # Reading the csv file and creating the DataFrame
+    df = pd.read_csv(filepath)
+
+    return df
+
+
+def plot_history(df, figsize=(12, 6), y_lim=(0, 1)):
+    """
+    Plots the loss and accuracy curves.
+    :param df: the data frame containing the histories we want to plot
+    :param y_lim: Tuple. If not differently specified, it's (0,1). Only applies to the accuracy plot.
+    :return: None
+    """
+
+    fig, ax = plt.subplots(figsize=figsize, nrows=1, ncols=2)
+
+    training_loss = df['loss']
+    training_accuracy = df['accuracy']
+
+    validation_loss = df['val_loss']
+    validation_accuracy = df['val_accuracy']
+
+    epochs = df['epoch']
+
+    # Plot Loss
+    ax[0].plot(epochs, training_loss, label="Training Loss", linewidth=2, color="#0291b5")
+    ax[0].plot(epochs, validation_loss, label="Validation Loss", linewidth=2, color="#eb0076")
+    ax[0].set_xlabel("Epochs")
+    ax[0].set_title("Training Loss vs Validation Loss")
+    ax[0].legend()
+    ax[0].grid()
+
+    # Plot Accuracy
+    ax[1].plot(epochs, training_accuracy, label="Training Accuracy", linewidth=2, color="#0291b5")
+    ax[1].plot(epochs, validation_accuracy, label="Validation Accuracy", linewidth=2, color="#eb0076")
+    ax[1].set_xlabel("Epochs")
+    ax[1].set_title("Training Accuracy vs Validation Accuracy")
+    ax[1].set_ylim(y_lim)
+    ax[1].legend()
+    ax[1].grid()
+
+    plt.show()
