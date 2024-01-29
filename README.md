@@ -19,4 +19,3 @@ more accurate risk estimate via cross-validation.
 Additionally, we perform transfer learning to analyse how well the classification performance
 can be improved when considering pre-trained, state-of-the-art neural networks.
 Finally, we discuss our obtained results and propose possible improvements.
-b
