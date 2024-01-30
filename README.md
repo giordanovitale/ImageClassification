@@ -1,8 +1,17 @@
 # ImageClassification
 Image Classification Project from Giordano Vitale &amp; Jan Philip Richter
 
+**Repository Content Description**:
+- files `sequential.py` and  `sequential.ipynb` refer to the first two models (sequential 1, sequential 2)
+- files `vgg.py` and  `vgg.ipynb` refer to the VGG-style models (VGG 1, VGG 2)
+- files `resnet.py` and `resnet.ipynb` refer to the ResNet models (ResNet14, ResNet32)
+- file  `cross_validation.ipynb` refers to the cross-validation performed on model Sequential 2
+- file  `transfer_learning.ipynb` refers to the state-of-the-art models used for reference
+- file  `helper_functions.py` includes functions used throughout the entire project
+- file  `visualisations.ipynb` includes plots and architecture visualisations used in the report
+- file  `Machine_Learning_Richter_Vitale.pdf` is the final report
 
-
+**Report Description**
 Convolutional neural networks are great machine learning models to deal with the task of
 image classification. This report introduces multiple model specifications in order to compare
 their performance on a classification task with the goal of identifying whether an image contains
